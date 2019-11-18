@@ -2,6 +2,16 @@
 
 package demo
 
+// _Entity represents all types with @key
+type _Entity interface {
+	Is_Entity()
+}
+
+type Entity struct {
+	FindTodoByID *Todo `json:"findTodoByID"`
+	FindUserByID *User `json:"findUserByID"`
+}
+
 type NewTodo struct {
 	Text   string `json:"text"`
 	UserID string `json:"userId"`
@@ -14,7 +24,11 @@ type Todo struct {
 	User *User  `json:"user"`
 }
 
+func (Todo) Is_Entity() {}
+
 type User struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
 }
+
+func (User) Is_Entity() {}

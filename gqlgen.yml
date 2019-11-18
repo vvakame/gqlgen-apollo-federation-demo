@@ -13,3 +13,5 @@ resolver:
   filename: resolver.go
   type: Resolver
 autobind: []
+
+federated: true

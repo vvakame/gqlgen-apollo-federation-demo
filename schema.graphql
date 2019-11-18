@@ -2,14 +2,14 @@
 #
 # https://gqlgen.com/getting-started/
 
-type Todo {
+type Todo @key(fields: "id") {
   id: ID!
   text: String!
   done: Boolean!
   user: User!
 }
 
-type User {
+type User @key(fields: "id") {
   id: ID!
   name: String!
 }
