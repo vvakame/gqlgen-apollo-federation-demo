@@ -1,0 +1,11 @@
+# from https://github.com/apollographql/federation-demo/blob/00f5119040e1b0ffba5adf220a585a7b83b1fbd4/services/accounts/index.js#L4-L14
+
+type Query @extends {
+  me: User
+}
+
+type User @key(fields: "id") {
+  id: ID!
+  name: String
+  username: String
+}

@@ -1,0 +1,27 @@
+# .gqlgen.yml example
+#
+# Refer to https://gqlgen.com/config/
+# for detailed .gqlgen.yml documentation.
+
+schema:
+- schema.graphql
+exec:
+  filename: generated.go
+model:
+  filename: models_gen.go
+resolver:
+  filename: resolver.go
+  type: Resolver
+autobind:
+  - github.com/vvakame/gqlgen-apollo-federation-demo/reviews
+models:
+  User:
+    fields:
+      reviews:
+        resolver: true # force a resolver to be generated
+  Product:
+    fields:
+      reviews:
+        resolver: true # force a resolver to be generated
+
+federated: true

@@ -1,0 +1,9 @@
+# from https://github.com/apollographql/federation-demo/blob/00f5119040e1b0ffba5adf220a585a7b83b1fbd4/services/accounts/index.js#L4-L14
+
+type Product @key(fields: "upc") @extends {
+  upc: String! @external
+  weight: Int @external
+  price: Int @external
+  inStock: Boolean
+  shippingEstimate: Int @requires(fields: "price weight")
+}

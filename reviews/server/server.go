@@ -6,10 +6,10 @@ import (
 	"os"
 
 	"github.com/99designs/gqlgen/handler"
-	demo "github.com/vvakame/gqlgen-apollo-federation-demo"
+	gql "github.com/vvakame/gqlgen-apollo-federation-demo/reviews"
 )
 
-const defaultPort = "8080"
+const defaultPort = "4002"
 
 func main() {
 	port := os.Getenv("PORT")
@@ -17,8 +17,8 @@ func main() {
 		port = defaultPort
 	}
 
-	http.Handle("/", handler.Playground("GraphQL playground", "/query"))
-	http.Handle("/query", handler.GraphQL(demo.NewExecutableSchema(demo.Config{Resolvers: &demo.Resolver{}})))
+	http.Handle("/", handler.Playground("GraphQL playground", "/graphql"))
+	http.Handle("/graphql", handler.GraphQL(gql.NewExecutableSchema(gql.Config{Resolvers: gql.NewResolver()})))
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))

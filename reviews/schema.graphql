@@ -1,0 +1,19 @@
+# from https://github.com/apollographql/federation-demo/blob/00f5119040e1b0ffba5adf220a585a7b83b1fbd4/services/accounts/index.js#L4-L14
+
+type Review @key(fields: "id") {
+  id: ID!
+  body: String
+  author: User @provides(fields: "username")
+  product: Product
+}
+
+type User @key(fields: "id") @extends {
+  id: ID! @external
+  username: String @external
+  reviews: [Review]
+}
+
+type Product @key(fields: "upc") @extends {
+  upc: String! @external
+  reviews: [Review]
+}
