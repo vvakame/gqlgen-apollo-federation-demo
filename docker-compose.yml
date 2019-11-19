@@ -1,0 +1,46 @@
+version: "3"
+services:
+  accounts:
+    build:
+      context: ./
+      args:
+        SERVICE_NAME: accounts
+    ports:
+      - "4001:4001"
+  reviews:
+    build:
+      context: ./
+      args:
+        SERVICE_NAME: reviews
+    ports:
+      - "4002:4002"
+  products:
+    build:
+      context: ./
+      args:
+        SERVICE_NAME: products
+    ports:
+      - "4003:4003"
+  inventory:
+    build:
+      context: ./
+      args:
+        SERVICE_NAME: inventory
+    ports:
+      - "4004:4004"
+  # gateway by apollo-server & @apollo/gateway on Node.js
+  gateway:
+    build:
+      context: ./gateway
+    depends_on:
+      - accounts
+      - reviews
+      - products
+      - inventory
+    environment:
+      - ACCOUNTS_HOST=accounts:4001
+      - REVIEWS_HOST=reviews:4002
+      - PRODUCTS_HOST=products:4003
+      - INVENTORY_HOST=inventory:4004
+    ports:
+      - "4000:4000"
