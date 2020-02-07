@@ -5,15 +5,16 @@ package accounts
 import (
 	"context"
 	"errors"
+	"fmt"
 
-	"github.com/99designs/gqlgen/graphql/introspection"
+	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
 )
 
-func (ec *executionContext) __resolve__service(ctx context.Context) (introspection.Service, error) {
+func (ec *executionContext) __resolve__service(ctx context.Context) (fedruntime.Service, error) {
 	if ec.DisableIntrospection {
-		return introspection.Service{}, errors.New("federated introspection disabled")
+		return fedruntime.Service{}, errors.New("federated introspection disabled")
 	}
-	return introspection.Service{
+	return fedruntime.Service{
 		SDL: `type Query @extends {
 	me: User
 }
@@ -26,8 +27,8 @@ type User @key(fields: "id") {
 	}, nil
 }
 
-func (ec *executionContext) __resolve_entities(ctx context.Context, representations []map[string]interface{}) ([]_Entity, error) {
-	list := []_Entity{}
+func (ec *executionContext) __resolve_entities(ctx context.Context, representations []map[string]interface{}) ([]fedruntime.Entity, error) {
+	list := []fedruntime.Entity{}
 	for _, rep := range representations {
 		typeName, ok := rep["__typename"].(string)
 		if !ok {
@@ -36,16 +37,18 @@ func (ec *executionContext) __resolve_entities(ctx context.Context, representati
 		switch typeName {
 
 		case "User":
-			id, ok := rep["id"].(string)
-			if !ok {
-				return nil, errors.New("opsies")
+			id0, err := ec.unmarshalNID2string(ctx, rep["id"])
+			if err != nil {
+				return nil, errors.New(fmt.Sprintf("Field %s undefined in schema.", "id"))
 			}
-			resp, err := ec.resolvers.Entity().FindUserByID(ctx, id)
+
+			entity, err := ec.resolvers.Entity().FindUserByID(ctx,
+				id0)
 			if err != nil {
 				return nil, err
 			}
 
-			list = append(list, resp)
+			list = append(list, entity)
 
 		default:
 			return nil, errors.New("unknown type: " + typeName)

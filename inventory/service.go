@@ -5,15 +5,16 @@ package inventory
 import (
 	"context"
 	"errors"
+	"fmt"
 
-	"github.com/99designs/gqlgen/graphql/introspection"
+	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
 )
 
-func (ec *executionContext) __resolve__service(ctx context.Context) (introspection.Service, error) {
+func (ec *executionContext) __resolve__service(ctx context.Context) (fedruntime.Service, error) {
 	if ec.DisableIntrospection {
-		return introspection.Service{}, errors.New("federated introspection disabled")
+		return fedruntime.Service{}, errors.New("federated introspection disabled")
 	}
-	return introspection.Service{
+	return fedruntime.Service{
 		SDL: `type Product @key(fields: "upc") @extends {
 	upc: String! @external
 	weight: Int @external
@@ -25,8 +26,8 @@ func (ec *executionContext) __resolve__service(ctx context.Context) (introspecti
 	}, nil
 }
 
-func (ec *executionContext) __resolve_entities(ctx context.Context, representations []map[string]interface{}) ([]_Entity, error) {
-	list := []_Entity{}
+func (ec *executionContext) __resolve_entities(ctx context.Context, representations []map[string]interface{}) ([]fedruntime.Entity, error) {
+	list := []fedruntime.Entity{}
 	for _, rep := range representations {
 		typeName, ok := rep["__typename"].(string)
 		if !ok {
@@ -35,26 +36,28 @@ func (ec *executionContext) __resolve_entities(ctx context.Context, representati
 		switch typeName {
 
 		case "Product":
-			id, ok := rep["upc"].(string)
-			if !ok {
-				return nil, errors.New("opsies")
+			id0, err := ec.unmarshalNString2string(ctx, rep["upc"])
+			if err != nil {
+				return nil, errors.New(fmt.Sprintf("Field %s undefined in schema.", "upc"))
 			}
-			resp, err := ec.resolvers.Entity().FindProductByUpc(ctx, id)
+
+			entity, err := ec.resolvers.Entity().FindProductByUpc(ctx,
+				id0)
 			if err != nil {
 				return nil, err
 			}
 
-			resp.Price, err = ec.unmarshalOInt2ᚖint(ctx, rep["price"])
+			entity.Price, err = ec.unmarshalOInt2ᚖint(ctx, rep["price"])
 			if err != nil {
 				return nil, err
 			}
 
-			resp.Weight, err = ec.unmarshalOInt2ᚖint(ctx, rep["weight"])
+			entity.Weight, err = ec.unmarshalOInt2ᚖint(ctx, rep["weight"])
 			if err != nil {
 				return nil, err
 			}
 
-			list = append(list, resp)
+			list = append(list, entity)
 
 		default:
 			return nil, errors.New("unknown type: " + typeName)

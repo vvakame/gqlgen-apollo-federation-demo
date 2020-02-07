@@ -24,4 +24,5 @@ models:
       reviews:
         resolver: true # force a resolver to be generated
 
-federated: true
+federation:
+  filename: service.go

@@ -2,11 +2,6 @@
 
 package accounts
 
-// _Entity represents all types with @key
-type _Entity interface {
-	Is_Entity()
-}
-
 type Entity struct {
 	FindUserByID *User `json:"findUserByID"`
 }
