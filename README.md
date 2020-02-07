@@ -2,7 +2,7 @@
 
 this repository is port of https://github.com/apollographql/federation-demo
 
-with https://github.com/marwan-at-work/gqlgen/tree/federation
+with https://gqlgen.com/
 
 
 ## How to use
