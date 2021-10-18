@@ -7,4 +7,4 @@ type Review struct {
 	Body       string `json:"body"`
 }
 
-func (Review) Is_Entity() {}
+func (Review) IsEntity() {}

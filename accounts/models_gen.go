@@ -2,14 +2,10 @@
 
 package accounts
 
-type Entity struct {
-	FindUserByID *User `json:"findUserByID"`
-}
-
 type User struct {
 	ID       string  `json:"id"`
 	Name     *string `json:"name"`
 	Username *string `json:"username"`
 }
 
-func (User) Is_Entity() {}
+func (User) IsEntity() {}

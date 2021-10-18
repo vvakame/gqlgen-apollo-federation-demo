@@ -2,10 +2,6 @@
 
 package accounts
 
-type Entity struct {
-	FindProductByUpc *Product `json:"findProductByUpc"`
-}
-
 type Product struct {
 	Upc    string  `json:"upc"`
 	Name   *string `json:"name"`
@@ -13,4 +9,4 @@ type Product struct {
 	Weight *int    `json:"weight"`
 }
 
-func (Product) Is_Entity() {}
+func (Product) IsEntity() {}

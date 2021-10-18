@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
 )
@@ -14,23 +15,18 @@ func (ec *executionContext) __resolve__service(ctx context.Context) (fedruntime.
 	if ec.DisableIntrospection {
 		return fedruntime.Service{}, errors.New("federated introspection disabled")
 	}
+
+	var sdl []string
+
+	for _, src := range sources {
+		if src.BuiltIn {
+			continue
+		}
+		sdl = append(sdl, src.Input)
+	}
+
 	return fedruntime.Service{
-		SDL: `type Product @key(fields: "upc") @extends {
-	upc: String! @external
-	reviews: [Review]
-}
-type Review @key(fields: "id") {
-	id: ID!
-	body: String
-	author: User @provides(fields: "username")
-	product: Product
-}
-type User @key(fields: "id") @extends {
-	id: ID! @external
-	username: String @external
-	reviews: [Review]
-}
-`,
+		SDL: strings.Join(sdl, "\n"),
 	}, nil
 }
 
@@ -43,13 +39,13 @@ func (ec *executionContext) __resolve_entities(ctx context.Context, representati
 		}
 		switch typeName {
 
-		case "User":
-			id0, err := ec.unmarshalNID2string(ctx, rep["id"])
+		case "Product":
+			id0, err := ec.unmarshalNString2string(ctx, rep["upc"])
 			if err != nil {
-				return nil, errors.New(fmt.Sprintf("Field %s undefined in schema.", "id"))
+				return nil, errors.New(fmt.Sprintf("Field %s undefined in schema.", "upc"))
 			}
 
-			entity, err := ec.resolvers.Entity().FindUserByID(ctx,
+			entity, err := ec.resolvers.Entity().FindProductByUpc(ctx,
 				id0)
 			if err != nil {
 				return nil, err
@@ -71,13 +67,13 @@ func (ec *executionContext) __resolve_entities(ctx context.Context, representati
 
 			list = append(list, entity)
 
-		case "Product":
-			id0, err := ec.unmarshalNString2string(ctx, rep["upc"])
+		case "User":
+			id0, err := ec.unmarshalNID2string(ctx, rep["id"])
 			if err != nil {
-				return nil, errors.New(fmt.Sprintf("Field %s undefined in schema.", "upc"))
+				return nil, errors.New(fmt.Sprintf("Field %s undefined in schema.", "id"))
 			}
 
-			entity, err := ec.resolvers.Entity().FindProductByUpc(ctx,
+			entity, err := ec.resolvers.Entity().FindUserByID(ctx,
 				id0)
 			if err != nil {
 				return nil, err

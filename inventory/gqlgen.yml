@@ -16,3 +16,9 @@ autobind: []
 
 federation:
   filename: service.go
+
+models:
+  Product:
+    fields:
+      shippingEstimate:
+        resolver: true

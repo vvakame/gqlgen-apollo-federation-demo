@@ -8,7 +8,7 @@ with https://gqlgen.com/
 ## How to use
 
 ```shell script
-$ docker-compose up --build
+$ docker compose up --build
 $ open http://localhost:4000/
 ```
 

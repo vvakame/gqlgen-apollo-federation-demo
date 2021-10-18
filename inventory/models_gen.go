@@ -2,10 +2,6 @@
 
 package inventory
 
-type Entity struct {
-	FindProductByUpc *Product `json:"findProductByUpc"`
-}
-
 type Product struct {
 	Upc              string `json:"upc"`
 	Weight           *int   `json:"weight"`
@@ -14,4 +10,4 @@ type Product struct {
 	ShippingEstimate *int   `json:"shippingEstimate"`
 }
 
-func (Product) Is_Entity() {}
+func (Product) IsEntity() {}

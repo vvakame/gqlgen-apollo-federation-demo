@@ -2,18 +2,12 @@
 
 package accounts
 
-type Entity struct {
-	FindUserByID     *User    `json:"findUserByID"`
-	FindReviewByID   *Review  `json:"findReviewByID"`
-	FindProductByUpc *Product `json:"findProductByUpc"`
-}
-
 type Product struct {
 	Upc     string    `json:"upc"`
 	Reviews []*Review `json:"reviews"`
 }
 
-func (Product) Is_Entity() {}
+func (Product) IsEntity() {}
 
 type User struct {
 	ID       string    `json:"id"`
@@ -21,4 +15,4 @@ type User struct {
 	Reviews  []*Review `json:"reviews"`
 }
 
-func (User) Is_Entity() {}
+func (User) IsEntity() {}
