@@ -30,9 +30,3 @@ $ npx prettier --write "./*/*.{graphql,js}"
 $ goimports -w ./**/*.go
 $ go generate ./...
 ```
-
-## :eyes: Issues
-
-* `extends Query` will make a panic
-    * > Cannot extend type Query because it does not exist.
-    * use `@extends` instead

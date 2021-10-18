@@ -205,7 +205,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 var sources = []*ast.Source{
 	{Name: "schema.graphql", Input: `# from https://github.com/apollographql/federation-demo/blob/00f5119040e1b0ffba5adf220a585a7b83b1fbd4/services/accounts/index.js#L4-L14
 
-type Query @extends {
+extend type Query {
   me: User
 }
 

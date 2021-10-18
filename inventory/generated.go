@@ -211,9 +211,9 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "schema.graphql", Input: `# from https://github.com/apollographql/federation-demo/blob/00f5119040e1b0ffba5adf220a585a7b83b1fbd4/services/accounts/index.js#L4-L14
+	{Name: "schema.graphql", Input: `# from https://github.com/apollographql/federation-demo/blob/00f5119040e1b0ffba5adf220a585a7b83b1fbd4/services/inventory/index.js#L4-L12
 
-type Product @key(fields: "upc") @extends {
+extend type Product @key(fields: "upc") {
   upc: String! @external
   weight: Int @external
   price: Int @external
