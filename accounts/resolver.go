@@ -17,13 +17,23 @@ func NewResolver() ResolverRoot {
 		users: []*User{
 			{
 				ID:       "1",
-				Name:     ptrString("Ada Lovelace"),
-				Username: ptrString("@ada"),
+				Name:     ptrString("Jad"),
+				Username: ptrString("@jad"),
 			},
 			{
 				ID:       "2",
-				Name:     ptrString("Alan"),
-				Username: ptrString("@complete"),
+				Name:     ptrString("Marouan"),
+				Username: ptrString("@marouan"),
+			},
+			{
+				ID:       "3",
+				Name:     ptrString("Anas"),
+				Username: ptrString("@anaselhajjaji"),
+			},
+			{
+				ID:       "4",
+				Name:     ptrString("Chaymae"),
+				Username: ptrString("@chaymae"),
 			},
 		},
 	}
@@ -45,6 +55,10 @@ type queryResolver struct{ *resolver }
 
 func (r *queryResolver) Me(ctx context.Context) (*User, error) {
 	return r.users[0], nil
+}
+
+func (r *queryResolver) AllUsers(ctx context.Context) ([]*User, error) {
+	return r.users, nil
 }
 
 type entityResolver struct{ *resolver }

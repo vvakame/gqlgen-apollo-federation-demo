@@ -2,6 +2,7 @@
 
 extend type Query {
   me: User
+  allUsers: [User]
 }
 
 type User @key(fields: "id") {

@@ -49,6 +49,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
+		AllUsers           func(childComplexity int) int
 		Me                 func(childComplexity int) int
 		__resolve__service func(childComplexity int) int
 		__resolve_entities func(childComplexity int, representations []map[string]interface{}) int
@@ -70,6 +71,7 @@ type EntityResolver interface {
 }
 type QueryResolver interface {
 	Me(ctx context.Context) (*User, error)
+	AllUsers(ctx context.Context) ([]*User, error)
 }
 
 type executableSchema struct {
@@ -98,6 +100,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Entity.FindUserByID(childComplexity, args["id"].(string)), true
+
+	case "Query.allUsers":
+		if e.complexity.Query.AllUsers == nil {
+			break
+		}
+
+		return e.complexity.Query.AllUsers(childComplexity), true
 
 	case "Query.me":
 		if e.complexity.Query.Me == nil {
@@ -207,6 +216,7 @@ var sources = []*ast.Source{
 
 extend type Query {
   me: User
+  allUsers: [User]
 }
 
 type User @key(fields: "id") {
@@ -406,6 +416,38 @@ func (ec *executionContext) _Query_me(ctx context.Context, field graphql.Collect
 	res := resTmp.(*User)
 	fc.Result = res
 	return ec.marshalOUser2ᚖgithubᚗcomᚋvvakameᚋgqlgenᚑapolloᚑfederationᚑdemoᚋaccountsᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_allUsers(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().AllUsers(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*User)
+	fc.Result = res
+	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋvvakameᚋgqlgenᚑapolloᚑfederationᚑdemoᚋaccountsᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query__entities(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1899,6 +1941,17 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				res = ec._Query_me(ctx, field)
 				return res
 			})
+		case "allUsers":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_allUsers(ctx, field)
+				return res
+			})
 		case "_entities":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -2723,6 +2776,47 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	return graphql.MarshalString(*v)
+}
+
+func (ec *executionContext) marshalOUser2ᚕᚖgithubᚗcomᚋvvakameᚋgqlgenᚑapolloᚑfederationᚑdemoᚋaccountsᚐUser(ctx context.Context, sel ast.SelectionSet, v []*User) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOUser2ᚖgithubᚗcomᚋvvakameᚋgqlgenᚑapolloᚑfederationᚑdemoᚋaccountsᚐUser(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
 }
 
 func (ec *executionContext) marshalOUser2ᚖgithubᚗcomᚋvvakameᚋgqlgenᚑapolloᚑfederationᚑdemoᚋaccountsᚐUser(ctx context.Context, sel ast.SelectionSet, v *User) graphql.Marshaler {
