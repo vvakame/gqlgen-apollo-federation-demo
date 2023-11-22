@@ -11,8 +11,8 @@ const gateway = new ApolloGateway({
     { name: "accounts", url: `http://${accountsHost}/graphql` },
     { name: "reviews", url: `http://${reviewsHost}/graphql` },
     { name: "products", url: `http://${productsHost}/graphql` },
-    { name: "inventory", url: `http://${inventoryHost}/graphql` }
-  ]
+    { name: "inventory", url: `http://${inventoryHost}/graphql` },
+  ],
 });
 
 (async () => {
