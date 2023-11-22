@@ -26,6 +26,7 @@ $ open http://localhost:4000/
 ## Development
 
 ```shell script
+$ go install golang.org/x/tools/cmd/goimports@latest
 $ npx prettier --write "./*/*.{graphql,js}"
 $ goimports -w ./**/*.go
 $ go generate ./...
