@@ -15,7 +15,6 @@ $ open http://localhost:4000/
 or
 
 ```shell script
-$ go get
 $ go run ./accounts/server/server.go
 $ go run ./reviews/server/server.go
 $ go run ./products/server/server.go
